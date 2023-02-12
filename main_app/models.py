@@ -3,9 +3,9 @@ from django.urls import reverse
 from datetime import date
 from django.contrib.auth.models import User
 
-# class Habitat(models.Model):
-#     name = models.CharField(max_length=100)
-#     description = models.TextField()
+class Habitat(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.TextField()
 
 class Fungi(models.Model):
     name = models.CharField(max_length=100)
@@ -13,7 +13,7 @@ class Fungi(models.Model):
     preferred_environment = models.CharField(max_length=100)
     edibility = models.CharField(max_length=100)
     date_collected = models.DateTimeField()
-    # habitats = models.ManyToManyField(Habitat)
+    habitats = models.ManyToManyField(Habitat, related_name='fungi')
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def get_absolute_url(self):
