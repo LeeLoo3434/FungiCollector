@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <header>
+    <nav class="nav-extended indigo">
+      <div class="nav-wrapper">
+        <a href="#" class="brand-logo center">Fungi Collector</a>
+        <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+        <ul id="nav-mobile" class="right hide-on-med-and-down">
+          <li><a href="#">Home</a></li>
+          <li><a href="#">Fungi</a></li>
+          <li><a href="#">About</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <ul class="sidenav" id="mobile-demo">
+      <li><a href="#">Home</a></li>
+      <li><a href="#">Fungi</a></li>
+      <li><a href="#">About</a></li>
+    </ul>
+  </header>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h1 class="header center">About the Fungi Collector</h1>
+  <div class="divider"></div>
+
+  <p class="flow-text">The Fungi Collector is a web application designed to help mushroom enthusiasts keep track of their collection and information about each species. With this app, users can create and store detailed information about each of their mushrooms, including its name, description, preferred environment, edibility, and date collected.</p>
+
+  <p class="flow-text">The Fungi Collector was created with the goal of providing an easy-to-use and comprehensive tool for mushroom lovers of all levels. Whether you're a seasoned mushroom hunter or just starting out, the Fungi Collector is the perfect way to keep track of your collection and learn more about each species.</p>
+
+  <p class="flow-text center">We hope you enjoy using the Fungi Collector as much as we enjoyed creating it!</p>
+</div>
+{% endblock %}

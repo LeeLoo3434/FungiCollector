@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1>Mushrooms</h1>
+
+{% for fungi in fungi_list %}
+  <a href="{% url 'fungi_detail' fungi.id %}">
+    <div class="card">
+        <div class="card-content">
+            <span class="card-title">{{ fungi.name }}</span>
+            <p>Description: {{ fungi.description }}</p>
+            <p>Prefered Environment: {{ fungi.preferred_environment }}</p>
+            <p>Edibility: {{ fungi.edibility }}</p>
+            <p>Date Collected: {{ fungi.date_collected }}</p>
+        </div>
+    </div>
+</a>
+{% endfor %}
+
+{% endblock %}
+
