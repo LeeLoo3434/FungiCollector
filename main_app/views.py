@@ -6,9 +6,10 @@ from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.urls import reverse
+from django.urls import reverse_lazy
+from django.contrib import messages
 
-# Create your views here.
+
 def home(request):
     return render(request,'home.html')
 
@@ -18,7 +19,7 @@ class FungiList(ListView):
 class FungiCreate(LoginRequiredMixin, CreateView):
     model = Fungi
     fields = ['name', 'description', 'preferred_environment',
-            'edibility', 'date_collected']
+              'edibility', 'date_collected']
     success_url = '/fungi/'
 
     def form_valid(self, form):
@@ -28,11 +29,11 @@ class FungiCreate(LoginRequiredMixin, CreateView):
 class FungiUpdate(LoginRequiredMixin, UpdateView):
     model = Fungi
     fields = ['name', 'description', 'preferred_environment',
-            'edibility', 'date_collected']
+              'edibility', 'date_collected']
 
 class FungiDelete(LoginRequiredMixin, DeleteView):
     model = Fungi
-    success_url = '/fungi'
+    success_url = '/fungi/'
 
 def about(request):
     return render(request, 'about.html') 
@@ -42,7 +43,7 @@ class FungiDetail(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['note'] = self.object.funginote_set.all()
+        context['notes'] = self.object.funginote_set.all()
         return context
 
 class FungiNoteCreate(LoginRequiredMixin, CreateView):
@@ -51,11 +52,13 @@ class FungiNoteCreate(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         form.instance.fungi = Fungi.objects.get(id=self.kwargs['fungi_id'])
+        form.instance.user = self.request.user
+        messages.success(self.request, "Note created successfully!")
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse('fungi_detail', kwargs={'pk': self.kwargs['fungi_id']})
-    
+        return reverse_lazy('fungi_detail', kwargs={'pk': self.kwargs['fungi_id']})
+
 def signup(request):
     error_message = ''
     form = UserCreationForm(request.POST)
