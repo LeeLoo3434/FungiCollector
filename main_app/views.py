@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import ListView, DetailView
-from .models import Fungi, FungiNote
+from .models import Fungi, FungiNote, Habitat
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
@@ -19,7 +19,7 @@ class FungiList(ListView):
 class FungiCreate(LoginRequiredMixin, CreateView):
     model = Fungi
     fields = ['name', 'description', 'preferred_environment',
-              'edibility', 'date_collected']
+            'edibility', 'date_collected', 'habitats']
     success_url = '/fungi/'
 
     def form_valid(self, form):
@@ -29,7 +29,7 @@ class FungiCreate(LoginRequiredMixin, CreateView):
 class FungiUpdate(LoginRequiredMixin, UpdateView):
     model = Fungi
     fields = ['name', 'description', 'preferred_environment',
-              'edibility', 'date_collected']
+            'edibility', 'date_collected', 'habitats']
 
 class FungiDelete(LoginRequiredMixin, DeleteView):
     model = Fungi
@@ -44,6 +44,7 @@ class FungiDetail(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['notes'] = self.object.funginote_set.all()
+        context['habitats'] = Habitat.objects.exclude(fungi=self.object)
         return context
 
 class FungiNoteCreate(LoginRequiredMixin, CreateView):

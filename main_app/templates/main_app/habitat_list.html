@@ -1,8 +1,11 @@
 {% extends 'base.html' %}
 
 {% block content %}
-
-<h1>Mushrooms</h1>
+<div class="row">
+  <div class="col s12">
+    <h1 class="center-align">Mushrooms</h1>
+  </div>
+</div>
 
 {% for fungi in fungi_list %}
 <div class="row">
@@ -13,7 +16,7 @@
         <p>{{ fungi.date_collected }}</p>
         </div>
         <div class="card-action">
-        <a href="{% url 'fungi_detail' fungi.id %}">View details</a>
+        <a href="{% url 'fungi_detail' fungi.id %}" class="btn btn-small right">View details</a>
         </div>
     </div>
     </div>
