@@ -1,6 +1,9 @@
 from django.urls import path
 from . import views
 from .views import FungiNoteCreate
+from django.conf import settings
+from django.conf.urls.static import static
+
 
 urlpatterns = [
     path('', views.home, name='home'),
@@ -14,3 +17,5 @@ urlpatterns = [
     path('fungi/<int:fungi_id>/notes/', views.FungiNoteCreate.as_view(), name='fungi_notes'),
     path('fungi/<int:fungi_id>/note/create/', FungiNoteCreate.as_view(), name='funginote_create'),
 ]
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

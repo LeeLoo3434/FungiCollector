@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import ListView, DetailView
-from .models import Fungi, FungiNote, Habitat
+from .models import Fungi, FungiNote
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
@@ -13,13 +13,15 @@ from django.contrib import messages
 def home(request):
     return render(request,'home.html')
 
+
 class FungiList(ListView):
     model = Fungi
+
 
 class FungiCreate(LoginRequiredMixin, CreateView):
     model = Fungi
     fields = ['name', 'description', 'preferred_environment',
-            'edibility', 'date_collected', 'habitats']
+            'edibility', 'date_collected', 'identified', 'photo']  # Updated the fields list to include 'identified'
     success_url = '/fungi/'
 
     def form_valid(self, form):
@@ -29,14 +31,21 @@ class FungiCreate(LoginRequiredMixin, CreateView):
 class FungiUpdate(LoginRequiredMixin, UpdateView):
     model = Fungi
     fields = ['name', 'description', 'preferred_environment',
-            'edibility', 'date_collected', 'habitats']
+            'edibility', 'date_collected', 'identified', 'photo']
+
+    def get_success_url(self):
+        return reverse_lazy('fungi_detail', kwargs={'pk': self.object.pk})
+
+
 
 class FungiDelete(LoginRequiredMixin, DeleteView):
     model = Fungi
     success_url = '/fungi/'
 
+
 def about(request):
     return render(request, 'about.html') 
+
 
 class FungiDetail(DetailView):
     model = Fungi
@@ -44,8 +53,8 @@ class FungiDetail(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['notes'] = self.object.funginote_set.all()
-        context['habitats'] = Habitat.objects.exclude(fungi=self.object)
-        return context
+        return context  # Removed the Habitat context since it's not in the models anymore
+
 
 class FungiNoteCreate(LoginRequiredMixin, CreateView):
     model = FungiNote
@@ -60,18 +69,18 @@ class FungiNoteCreate(LoginRequiredMixin, CreateView):
     def get_success_url(self):
         return reverse_lazy('fungi_detail', kwargs={'pk': self.kwargs['fungi_id']})
 
+
 def signup(request):
-    error_message = ''
-    form = UserCreationForm(request.POST)
     if request.method == 'POST':
+        form = UserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
             login(request, user)
             return redirect('/')
         else:
-            error_message = 'Invalid sign up - try again'
-    form = UserCreationForm()
-    context = {'form': form, 'error_message': error_message}
-    return render(request, 'registration/signup.html', context)
+            messages.error(request, 'Invalid sign up - try again')
+    else:
+        form = UserCreationForm()
 
+    return render(request, 'registration/signup.html', {'form': form})
 
