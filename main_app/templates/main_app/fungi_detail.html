@@ -1,45 +1,60 @@
-{% extends 'base.html' %}
+{% extends 'base.html' %} 
+
 {% block content %}
 
-<h1>Fungi Details</h1>
+<h1 class="center-align">Mushroom Details</h1>
+
 <div class="row">
-  <div class="col s6 col-offset-3">
-    <div class="card">
-      <div class="card-content">
-        <span class="card-title">{{ fungi.name }}</span>
-        <p>Description: {{ fungi.description }}</p>
-        <p>Preferred Environment: {{ fungi.preferred_environment }}</p>
-        <p>Edibility: {% if fungi.edibility %}Edible{% else %}Not Edible{% endif %}</p>
-        <p>Date Collected: {{ fungi.date_collected }}</p>
-        <p>Status: {% if fungi.identified %}Identified{% else %}Unidentified{% endif %}</p>
-      </div>
-      <div class="card-action">
-        <a href="{% url 'fungi_update' fungi.id %}">Edit</a>
-        <a href="{% url 'fungi_delete' fungi.id %}">Delete</a>
-      </div>
+    <div class="col s12 m6 offset-m3">
+        <div class="card fungi-detail-card"> <!-- Added fungi-detail-card class -->
+            <!-- Show the mushroom image -->
+            {% if fungi.photo %}
+            <div class="card-image fungi-card-image">
+                <img class="responsive-img fungi-img-detail" src="{{ fungi.photo.url }}" alt="{{ fungi.name }}">
+                <span class="card-title">{{ fungi.name }}</span>
+            </div>
+            {% else %}
+            <div class="card-content">
+                <span class="card-title">{{ fungi.name }}</span>
+            </div>
+            {% endif %}
+            <div class="card-content">
+                <p><strong>Description:</strong> {{ fungi.description }}</p>
+                <p><strong>Preferred Environment:</strong> {{ fungi.preferred_environment }}</p>
+                <p><strong>Edibility:</strong> {% if fungi.edibility %}Edible{% else %}Not Edible{% endif %}</p>
+                <p><strong>Date Collected:</strong> {{ fungi.date_collected|date:"F d, Y" }}</p>
+                <p><strong>Status:</strong> {% if fungi.identified %}Identified{% else %}Unidentified{% endif %}</p>
+            </div>
+            <div class="card-action">
+                <a href="{% url 'fungi_update' fungi.id %}">Edit</a>
+                <a href="{% url 'fungi_delete' fungi.id %}">Delete</a>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
-<h2>Fungi Notes</h2>
+
+<h2 class="center-align">Notes</h2>
+
 <div class="row">
-  <div class="col s6 col-offset-3">
-    <ul class="collection">
-      {% for note in fungi.funginote_set.all %}
-      <li class="collection-item">
-        <strong>{{ note.user.username }}:</strong> {{ note.note }}
-      </li>
-      {% endfor %}
-    </ul>
-  </div>
+    <div class="col s12 m6 offset-m3">
+        <ul class="collection">
+            {% for note in fungi.funginote_set.all %}
+            <li class="collection-item">
+                <strong>{{ note.user.username }}:</strong> {{ note.note }}
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
 </div>
+
 <div class="row">
-  <div class="col s6 col-offset-3">
-    <form method="post" action="{% url 'funginote_create' fungi.id %}">
-      {% csrf_token %}
-      {{ form.as_p }}
-      <button type="submit">Create Note</button>
-    </form>
-  </div>
+    <div class="col s12 m6 offset-m3">
+        <form method="post" action="{% url 'funginote_create' fungi.id %}">
+            {% csrf_token %} 
+            {{ form.as_p }}
+            <button class="btn" type="submit">Create Note</button>
+        </form>
+    </div>
 </div>
 
 {% endblock %}
