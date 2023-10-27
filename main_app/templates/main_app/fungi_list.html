@@ -22,13 +22,20 @@
     .card-action {
         text-align: center; /* Center the child elements */
     }
+    h1 {
+        font-family: 'Poppins', sans-serif;
+        font-weight: 500; /* Medium weight */
+        font-size: 2.5em; /* Adjust as needed */
+        margin-top: 30px;
+        margin-bottom: 30px;
+    }
 </style>
 
 <h1>Mushroom Collection</h1>
 
+<div class="row"> <!-- Moved the row div outside of the loop -->
 {% for fungi in fungi_list %}
-<div class="row">
-    <div class="col s12 m6 l4">
+    <div class="col s12 m4 l4"> <!-- Adjusted the grid classes here -->
         <div class="card">
             <div class="card-image fungi-card-image">
                 {% if fungi.photo %}
@@ -44,7 +51,7 @@
             </div>
         </div>
     </div>
-</div>
 {% endfor %}
+</div>
 
 {% endblock %}

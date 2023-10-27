@@ -8,15 +8,50 @@
   <h1 class="header center">Welcome to the Fungi Collector</h1>
   
   <div class="row center">
-    <img src="{% static 'images/mushroom.jpeg' %}" alt="Mushroom" style="width: 100%; max-width: 500px; margin: 20px 0;">
+    <!-- Materialize Carousel -->
+    <div class="carousel" style="height: 350px;"> <!-- Adjust height as needed -->
+      <a class="carousel-item" href="#four!"><img class="carousel-img" src="{% static 'images/mushfour.jpeg' %}" alt="Mushroom 4"></a>
+      <a class="carousel-item" href="#one!"><img class="carousel-img" src="{% static 'images/mushroom.jpeg' %}" alt="Mushroom 1"></a>
+      <a class="carousel-item" href="#two!"><img class="carousel-img" src="{% static 'images/mushtwo.jpeg' %}" alt="Mushroom 2"></a>
+      <a class="carousel-item" href="#three!"><img class="carousel-img" src="{% static 'images/mushthree.jpeg' %}" alt="Mushroom 3"></a>
+    </div>
   </div>
 
   <div class="row center">
     <h5 class="header col s12 light">A place to keep track of all your fungal specimens</h5>
   </div>
+  
   <div class="row center">
     <a href="{% url 'signup' %}" class="btn">Start Collecting</a>
   </div>
 </div>
+
+<style>
+    .carousel .carousel-item img.carousel-img {
+        width: auto; /* Width can adjust to the image's natural width */
+        height: 300px; /* Set this to your desired height */
+        object-fit: cover; /* This will ensure images cover the area without distortion */
+        margin-left: auto; 
+        margin-right: auto;
+    }
+    h1.header {
+        font-family: 'Poppins', sans-serif;
+        font-weight: 500; /* Medium weight */
+        font-size: 2.5em; /* Adjust as needed */
+        margin-top: 30px;
+        margin-bottom: 30px;
+    }
+</style>
+
+<script>
+    // Initialize the carousel
+    document.addEventListener('DOMContentLoaded', function() {
+        var elems = document.querySelectorAll('.carousel');
+        var instances = M.Carousel.init(elems, {
+            fullWidth: false,
+            indicators: true
+        });
+    });
+</script>
 
 {% endblock %}

@@ -26,13 +26,12 @@
                 <p><strong>Status:</strong> {% if fungi.identified %}Identified{% else %}Unidentified{% endif %}</p>
             </div>
             <div class="card-action">
-                <a href="{% url 'fungi_update' fungi.id %}">Edit</a>
-                <a href="{% url 'fungi_delete' fungi.id %}">Delete</a>
+                <a href="{% url 'fungi_update' fungi.id %}"class="btn gradient-btn">Edit</a>
+                <a href="{% url 'fungi_delete' fungi.id %}"class="btn gradient-btn">Delete</a>
             </div>
         </div>
     </div>
 </div>
-
 
 <div class="row">
     <div class="col s12 m6 offset-m3">
@@ -41,10 +40,8 @@
             <li class="collection-item">
                 <strong>{{ comment.user.username }}:</strong> {{ comment.content }}
                 <br>
-                <!-- Edit comment button -->
-                <a href="{% url 'comment_update' fungi_id=fungi.id pk=comment.id %}">Edit</a>
-                <!-- Delete comment button -->
-                <a href="{% url 'comment_delete' fungi_id=fungi.id pk=comment.id %}">Delete</a>
+                <a href="{% url 'comment_update' fungi_id=fungi.id pk=comment.id %}" class="btn gradient-btn">Edit</a>
+                <a href="{% url 'comment_delete' fungi_id=fungi.id pk=comment.id %}" class="btn gradient-btn">Delete</a>
             </li>
             {% endfor %}
         </ul>

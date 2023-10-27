@@ -12,6 +12,7 @@ class Fungi(models.Model):
     edibility = models.BooleanField(default=False)  # True means edible, False means not
     date_collected = models.DateTimeField()
     identified = models.BooleanField(default=False)  # True means identified, False means not
+    is_public = models.BooleanField(default=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def get_absolute_url(self):
