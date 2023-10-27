@@ -2,25 +2,62 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="X-UA-Compatible" content="ie=edge">
-<title>Fungi Collector</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Fungi Collector</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <style>
+        body {
+        background: linear-gradient(to bottom, rgba(0, 0, 0, 0.1), rgba(128, 128, 128, 0.1));
+    }
+        /* Gradient black navbar styling */
+        nav.nav-gradient {
+            background: linear-gradient(90deg, black, rgba(0,0,0,0.8));
+        }
+        .gradient-btn {
+        background: linear-gradient(to right, rgba(0, 0, 0, 0.9), rgba(128, 128, 128, 0.1));
+        color: white;
+    }
+    .center-btn {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+    }
+    </style>
 </head>
 <body>
-    <header class="navbar-fixed">
-        <nav>
+    <header>
+        <nav class="nav-gradient navbar-fixed">
             <div class="nav-wrapper">
-            <ul>
-            </ul>
-            <ul class="right">
-                <li><a href="{% url 'about' %}">About</a></li>
+                <a href="{% url 'about' %}" class="brand-logo center">🍄</a>
+                <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+                <ul class="right hide-on-med-and-down">
+                    <!-- Dropdown Trigger -->
+                    <li><a class="dropdown-trigger" href="#!" data-target="dropdown1">Menu<i class="material-icons right"></i></a></li>
+                </ul>
+                <!-- Dropdown Structure -->
+                <ul id="dropdown1" class="dropdown-content">
+                    {% if user.is_authenticated %}
+                        <li><a href="{% url 'fungi_create' %}">Add Mushroom</a></li>
+                        <li><a href="{% url 'index' %}">Mushroom Collection</a></li>
+                        <li><a href="{% url 'logout' %}">Log Out</a></li>
+                    {% else %}
+                        <li><a href="{% url 'signup' %}">Sign Up</a></li>
+                        <li><a href="{% url 'login' %}">Log In</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </nav>
 
-
-                {% if user.is_authenticated %}
+        <!-- Side navigation for mobile -->
+        <ul class="sidenav" id="mobile-demo">
+            <li><a href="{% url 'about' %}">About</a></li>
+            {% if user.is_authenticated %}
                 <li><a href="{% url 'fungi_create' %}">Add A Mushroom</a></li>
                 <li><a href="{% url 'index' %}">View Mushrooms</a></li>
                 <li><a href="{% url 'logout' %}">Log Out</a></li>
@@ -28,14 +65,22 @@
                 <li><a href="{% url 'signup' %}">Sign Up</a></li>
                 <li><a href="{% url 'login' %}">Log In</a></li>
             {% endif %}
-            </ul>
-            </div>
-        </nav>
+        </ul>
+
     </header>
     <main class="container">
         {% block content %}
         {% endblock %}
     </main>
-    </body>
-    </html>
-    
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var elems = document.querySelectorAll('.sidenav');
+            var instances = M.Sidenav.init(elems);
+
+            var elemsDropdown = document.querySelectorAll('.dropdown-trigger');
+            var instancesDropdown = M.Dropdown.init(elemsDropdown);
+        });
+    </script>
+</body>
+</html>

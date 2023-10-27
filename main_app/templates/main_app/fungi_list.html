@@ -2,25 +2,47 @@
 
 {% block content %}
 
+<style>
+    .gradient-btn, .gradient-link {
+        background: linear-gradient(to right, rgba(0, 0, 0, 0.9), rgba(128, 128, 128, 0.1));
+        color: white;
+        padding: 10px 15px;
+        border-radius: 4px;
+        text-align: center;
+        text-decoration: none; /* Remove underline from the link */
+        display: inline-block; /* Required for padding to take effect */
+        transition: 0.3s; /* Smooth transition for hover effects */
+    }
+
+    .gradient-link:hover {
+        background: linear-gradient(to right, rgba(0, 0, 0, 1), rgba(64, 64, 64, 0.2)); /* Darker gradient on hover for more intensity */
+    }
+
+    /* Styling to center the button/link */
+    .card-action {
+        text-align: center; /* Center the child elements */
+    }
+</style>
+
 <h1>Mushroom Collection</h1>
 
 {% for fungi in fungi_list %}
 <div class="row">
     <div class="col s12 m6 l4">
-    <div class="card">
-        <div class="card-image fungi-card-image"> <!-- New class added for styling -->
-            {% if fungi.photo %}
-            <img class="responsive-img fungi-img" src="{{ fungi.photo.url }}" alt="{{ fungi.name }}"> <!-- New class added for styling -->
-            {% endif %}
-            <span class="card-title">{{ fungi.name }}</span>
+        <div class="card">
+            <div class="card-image fungi-card-image">
+                {% if fungi.photo %}
+                <img class="responsive-img fungi-img" src="{{ fungi.photo.url }}" alt="{{ fungi.name }}">
+                {% endif %}
+                <span class="card-title">{{ fungi.name }}</span>
+            </div>
+            <div class="card-content">
+                <p>{{ fungi.date_collected }}</p>
+            </div>
+            <div class="card-action">
+                <a href="{% url 'fungi_detail' fungi.id %}" class="gradient-link">View details</a>
+            </div>
         </div>
-        <div class="card-content">
-        <p>{{ fungi.date_collected }}</p>
-        </div>
-        <div class="card-action">
-        <a href="{% url 'fungi_detail' fungi.id %}">View details</a>
-        </div>
-    </div>
     </div>
 </div>
 {% endfor %}

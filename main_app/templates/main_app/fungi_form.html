@@ -1,14 +1,70 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    {% if object %}
-    <h1>Edit <span class="teal-text">{{object.name}}</span></h1>
-    {% else %}
-    <h1>New Mushroom</h1>
-    {% endif %}
+
+<style>
+    .content-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* horizontally center */
+        justify-content: center; /* vertically center */
+        height: 80vh; /* take the full viewport height */
+    }
+
+    .gradient-btn, .gradient-link {
+        background: linear-gradient(to right, rgba(0, 0, 0, 0.9), rgba(128, 128, 128, 0.1));
+        color: white;
+        padding: 10px 15px;
+        border-radius: 2px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        transition: 0.3s;
+    }
+
+    .gradient-btn:hover, .gradient-link:hover {
+        background: linear-gradient(to right, rgba(0, 0, 0, 1), rgba(64, 64, 64, 0.2));
+    }
+
+    /* Adjustments for the table styling */
+    table {
+        width: 80%;
+        margin: 0 auto;
+    }
+
+    td {
+        padding: 10px;
+    }
+
+    .alert {
+        background-color: #f8d7da;
+        border-color: #f5c6cb;
+        color: #721c24;
+        padding: 10px;
+        margin-bottom: 20px;
+        border-radius: 4px;
+        text-align: center; /* Centering the error messages */
+    }
+
+    .card-panel {
+        width: 100%;
+        max-width: 800px; /* Adjust as per your needs */
+    }
+</style>
+
+<div class="content-wrapper">
+
+    <h4 class="center-align">
+        {% if object %}
+            Edit Mushroom: <span class="teal-text">{{object.name}}</span>
+        {% else %}
+            Upload a New Mushroom
+        {% endif %}
+    </h4>
 
     {% if form.errors %}
-    <div class="alert alert-danger">
+    <div class="alert">
+        Please correct the following errors:
         <ul>
             {% for field, errors in form.errors.items %}
                 {% for error in errors %}
@@ -19,46 +75,55 @@
     </div>
     {% endif %}
 
-    <form action="" method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        <table>
-            {% for field in form %}
-                {% if not field.is_hidden %}
-                    <tr>
-                        <td>{{ field.label_tag }}</td>
-                        <td>
-                            {% if field.name == "edibility" or field.name == "identified" %}
-                                <label>
-                                    <input type="radio" name="{{ field.name }}" value="True" class="with-gap" {% if field.value %}checked{% endif %}>
-                                    <span>Yes</span>
-                                </label>
-                                <label>
-                                    <input type="radio" name="{{ field.name }}" value="False" class="with-gap" {% if not field.value %}checked{% endif %}>
-                                    <span>No</span>
-                                </label>
-                            {% else %}
-                                {{ field }}
-                            {% endif %}
-                            {% if field.help_text %}
-                                <small style="display: block;">{{ field.help_text }}</small>
-                            {% endif %}
-                        </td>
-                    </tr>
-                {% else %}
-                    {{ field }}
-                {% endif %}
-            {% endfor %}
-        </table>
-        <input type="submit" value="Submit!" class="btn">
-    </form>
+    <div class="card-panel">
+        <form action="" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <table>
+                {% for field in form %}
+                    {% if not field.is_hidden %}
+                        <tr>
+                            <td>{{ field.label_tag }}</td>
+                            <td>
+                                {% if field.name == "edibility" or field.name == "identified" %}
+                                    <label>
+                                        <input type="radio" name="{{ field.name }}" value="True" class="with-gap" {% if field.value %}checked{% endif %}>
+                                        <span>Yes</span>
+                                    </label>
+                                    <label>
+                                        <input type="radio" name="{{ field.name }}" value="False" class="with-gap" {% if not field.value %}checked{% endif %}>
+                                        <span>No</span>
+                                    </label>
+                                {% else %}
+                                    {{ field }}
+                                {% endif %}
+                                {% if field.help_text %}
+                                    <small style="display: block;">{{ field.help_text }}</small>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% else %}
+                        {{ field }}
+                    {% endif %}
+                {% endfor %}
+            </table>
+            <div class="row">
+                <div class="col s12 center-align">
+                    <button type="submit" class="gradient-btn">Submit!</button>
+                </div>
+            </div>
+            
+        </form>
+    </div>
+</div>
 
-    <script>
-        const dateEl = document.getElementById('id_date_collected');
-        M.Datepicker.init(dateEl, {
-            format: 'yyyy-mm-dd',
-            defaultDate: new Date(),
-            setDefaultDate: true,
-            autoClose: true
-        });
-    </script>
+<script>
+    const dateEl = document.getElementById('id_date_collected');
+    M.Datepicker.init(dateEl, {
+        format: 'yyyy-mm-dd',
+        defaultDate: new Date(),
+        setDefaultDate: true,
+        autoClose: true
+    });
+</script>
+
 {% endblock %}

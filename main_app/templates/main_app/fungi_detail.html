@@ -56,7 +56,9 @@
         <form method="post" action="{% url 'comment_create' fungi.id %}">
             {% csrf_token %} 
             {{ form.as_p }}
-            <button class="btn" type="submit">Create Comment</button>
+            <div class="center-btn">
+                <button class="btn gradient-btn" type="submit">Create Comment</button>
+            </div>
         </form>
     </div>
 </div>
