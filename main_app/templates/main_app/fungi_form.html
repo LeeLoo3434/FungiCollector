@@ -80,31 +80,32 @@
             {% csrf_token %}
             <table>
                 {% for field in form %}
-                    {% if not field.is_hidden %}
-                        <tr>
-                            <td>{{ field.label_tag }}</td>
-                            <td>
-                                {% if field.name == "edibility" or field.name == "identified" %}
-                                    <label>
-                                        <input type="radio" name="{{ field.name }}" value="True" class="with-gap" {% if field.value %}checked{% endif %}>
-                                        <span>Yes</span>
-                                    </label>
-                                    <label>
-                                        <input type="radio" name="{{ field.name }}" value="False" class="with-gap" {% if not field.value %}checked{% endif %}>
-                                        <span>No</span>
-                                    </label>
-                                {% else %}
-                                    {{ field }}
-                                {% endif %}
-                                {% if field.help_text %}
-                                    <small style="display: block;">{{ field.help_text }}</small>
-                                {% endif %}
-                            </td>
-                        </tr>
-                    {% else %}
-                        {{ field }}
-                    {% endif %}
-                {% endfor %}
+    {% if not field.is_hidden %}
+        <tr>
+            <td>{{ field.label_tag }}</td>
+            <td>
+                {% if field.name == "edibility" or field.name == "identified" or field.name == "is_public" %}
+                    <label>
+                        <input type="radio" name="{{ field.name }}" value="True" class="with-gap" {% if field.value %}checked{% endif %}>
+                        <span>Yes</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="{{ field.name }}" value="False" class="with-gap" {% if not field.value %}checked{% endif %}>
+                        <span>No</span>
+                    </label>
+                {% else %}
+                    {{ field }}
+                {% endif %}
+                {% if field.help_text %}
+                    <small style="display: block;">{{ field.help_text }}</small>
+                {% endif %}
+            </td>
+        </tr>
+    {% else %}
+        {{ field }}
+    {% endif %}
+{% endfor %}
+
             </table>
             <div class="row">
                 <div class="col s12 center-align">

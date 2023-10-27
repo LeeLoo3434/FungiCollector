@@ -9,7 +9,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.contrib import messages
 from django.urls import reverse
-
+from django.http import HttpResponseRedirect
 def home(request):
     return render(request,'home.html')
 
@@ -21,7 +21,7 @@ class FungiList(ListView):
 class FungiCreate(LoginRequiredMixin, CreateView):
     model = Fungi
     fields = ['name', 'description', 'preferred_environment',
-            'edibility', 'date_collected', 'identified', 'photo']  # Updated the fields list to include 'identified'
+            'edibility', 'date_collected', 'identified', 'photo','is_public']  # Updated the fields list to include 'identified'
     success_url = '/fungi/'
 
     def form_valid(self, form):
@@ -31,7 +31,7 @@ class FungiCreate(LoginRequiredMixin, CreateView):
 class FungiUpdate(LoginRequiredMixin, UpdateView):
     model = Fungi
     fields = ['name', 'description', 'preferred_environment',
-            'edibility', 'date_collected', 'identified', 'photo']
+            'edibility', 'date_collected', 'identified', 'photo''is_public']
 
     def get_success_url(self):
         return reverse_lazy('fungi_detail', kwargs={'pk': self.object.pk})
@@ -60,6 +60,20 @@ class FungiDetail(DetailView):
 class CommentCreate(LoginRequiredMixin, CreateView):
     model = Comment
     fields = ['content']
+
+    def get(self, request, *args, **kwargs):
+        fungi = Fungi.objects.get(id=self.kwargs['fungi_id'])
+        if not fungi.is_public:
+            messages.error(self.request, "You cannot comment on a private post!")
+            return HttpResponseRedirect(reverse('fungi_detail', kwargs={'pk': fungi.id}))
+        return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        fungi = Fungi.objects.get(id=self.kwargs['fungi_id'])
+        if not fungi.is_public:
+            messages.error(self.request, "You cannot comment on a private post!")
+            return HttpResponseRedirect(reverse('fungi_detail', kwargs={'pk': fungi.id}))
+        return super().post(request, *args, **kwargs)
 
     def form_valid(self, form):
         form.instance.fungi = Fungi.objects.get(id=self.kwargs['fungi_id'])

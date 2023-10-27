@@ -24,10 +24,11 @@
                 <p><strong>Edibility:</strong> {% if fungi.edibility %}Edible{% else %}Not Edible{% endif %}</p>
                 <p><strong>Date Collected:</strong> {{ fungi.date_collected|date:"F d, Y" }}</p>
                 <p><strong>Status:</strong> {% if fungi.identified %}Identified{% else %}Unidentified{% endif %}</p>
+                <p><strong>Visibility:</strong> {% if fungi.is_public %}Public{% else %}Private{% endif %}</p>
             </div>
             <div class="card-action">
-                <a href="{% url 'fungi_update' fungi.id %}"class="btn gradient-btn">Edit</a>
-                <a href="{% url 'fungi_delete' fungi.id %}"class="btn gradient-btn">Delete</a>
+                <a href="{% url 'fungi_update' fungi.id %}" class="btn gradient-btn">Edit</a>
+                <a href="{% url 'fungi_delete' fungi.id %}" class="btn gradient-btn">Delete</a>
             </div>
         </div>
     </div>
