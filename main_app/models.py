@@ -19,11 +19,11 @@ class Fungi(models.Model):
 
     class Meta:
         ordering = ['-date_collected']
-class FungiNote(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)  # User who added the note
-    note = models.TextField('note')
+class Comment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)  # User who added the comment
+    content = models.TextField('content')  # renamed note to content
     fungi = models.ForeignKey(Fungi, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f'{self.id}:{self.note}'
+        return f'{self.id}:{self.content}'
 

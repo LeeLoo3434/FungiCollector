@@ -6,7 +6,7 @@
 
 <div class="row">
     <div class="col s12 m6 offset-m3">
-        <div class="card fungi-detail-card"> <!-- Added fungi-detail-card class -->
+        <div class="card fungi-detail-card">
             <!-- Show the mushroom image -->
             {% if fungi.photo %}
             <div class="card-image fungi-card-image">
@@ -33,14 +33,18 @@
     </div>
 </div>
 
-<h2 class="center-align">Notes</h2>
 
 <div class="row">
     <div class="col s12 m6 offset-m3">
         <ul class="collection">
-            {% for note in fungi.funginote_set.all %}
+            {% for comment in fungi.comment_set.all %}
             <li class="collection-item">
-                <strong>{{ note.user.username }}:</strong> {{ note.note }}
+                <strong>{{ comment.user.username }}:</strong> {{ comment.content }}
+                <br>
+                <!-- Edit comment button -->
+                <a href="{% url 'comment_update' fungi_id=fungi.id pk=comment.id %}">Edit</a>
+                <!-- Delete comment button -->
+                <a href="{% url 'comment_delete' fungi_id=fungi.id pk=comment.id %}">Delete</a>
             </li>
             {% endfor %}
         </ul>
@@ -49,10 +53,10 @@
 
 <div class="row">
     <div class="col s12 m6 offset-m3">
-        <form method="post" action="{% url 'funginote_create' fungi.id %}">
+        <form method="post" action="{% url 'comment_create' fungi.id %}">
             {% csrf_token %} 
             {{ form.as_p }}
-            <button class="btn" type="submit">Create Note</button>
+            <button class="btn" type="submit">Create Comment</button>
         </form>
     </div>
 </div>

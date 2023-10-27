@@ -1,14 +1,14 @@
 from django.shortcuts import render, redirect
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import ListView, DetailView
-from .models import Fungi, FungiNote
+from .models import Fungi, Comment
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.contrib import messages
-
+from django.urls import reverse
 
 def home(request):
     return render(request,'home.html')
@@ -52,23 +52,41 @@ class FungiDetail(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['notes'] = self.object.funginote_set.all()
+        context['notes'] = self.object.comment_set.all()
         return context  # Removed the Habitat context since it's not in the models anymore
 
 
-class FungiNoteCreate(LoginRequiredMixin, CreateView):
-    model = FungiNote
-    fields = ['note']
+
+class CommentCreate(LoginRequiredMixin, CreateView):
+    model = Comment
+    fields = ['content']
 
     def form_valid(self, form):
         form.instance.fungi = Fungi.objects.get(id=self.kwargs['fungi_id'])
         form.instance.user = self.request.user
-        messages.success(self.request, "Note created successfully!")
+        messages.success(self.request, "Comment created successfully!")
         return super().form_valid(form)
 
     def get_success_url(self):
         return reverse_lazy('fungi_detail', kwargs={'pk': self.kwargs['fungi_id']})
 
+class CommentUpdate(LoginRequiredMixin, UpdateView):
+    model = Comment
+    fields = ['content']
+
+    def get_success_url(self):
+        return reverse('fungi_detail', kwargs={'pk': self.object.fungi.id})
+
+class CommentDelete(LoginRequiredMixin, DeleteView):
+    model = Comment
+
+    def get_success_url(self):
+        return reverse('fungi_detail', kwargs={'pk': self.object.fungi.id})
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['fungi'] = self.object.fungi  # Add the related fungi instance to the context
+        return context
 
 def signup(request):
     if request.method == 'POST':

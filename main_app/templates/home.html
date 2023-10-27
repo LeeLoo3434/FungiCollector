@@ -1,15 +1,21 @@
 {% extends 'base.html' %}
 
+{% load static %}
+
 {% block content %}
 
 <div class="container">
   <h1 class="header center">Welcome to the Fungi Collector</h1>
+  
+  <div class="row center">
+    <img src="{% static 'images/mushroom.jpeg' %}" alt="Mushroom" style="width: 100%; max-width: 500px; margin: 20px 0;">
+  </div>
+
   <div class="row center">
     <h5 class="header col s12 light">A place to keep track of all your fungal specimens</h5>
   </div>
   <div class="row center">
     <a href="{% url 'signup' %}" class="btn">Start Collecting</a>
-
   </div>
 </div>
 
