@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<style>
+    /* Existing styles */
+    .fungi-card {
+        margin-bottom: 20px;
+    }
+
+    .like-btn {
+        cursor: pointer;
+    }
+
+    /* Added style for collapsible comments */
+    .collapsible-body {
+        padding: 10px;
+    }
+    
+    .comment-user {
+        font-weight: bold;
+        margin-right: 5px;
+    }
+
+</style>
+
+<h1>Public Fungi Feed</h1>
+
+<div class="row">
+    {% for fungi in fungi_list %}
+    <div class="col s12 m6 l4">
+        <div class="card fungi-card">
+            <div class="card-image">
+                {% if fungi.photo %}
+                <img src="{{ fungi.photo.url }}" alt="{{ fungi.name }}">
+                {% else %}
+                <img src="#" alt="Default fungi image"> <!-- You can provide a default image URL here -->
+                {% endif %}
+                <span class="card-title">{{ fungi.name }}</span>
+            </div>
+            <div class="card-content">
+                <p><strong>Description:</strong> {{ fungi.description }}</p>
+                <p><strong>Edibility:</strong> {{ fungi.edibility }}</p>
+                <!-- Add more fungi details here as needed -->
+            </div>
+            <div class="card-action">
+                <a href="{% url 'fungi_detail' fungi.id %}">Details</a>
+                <!-- Conditional display for interaction based on friendship -->
+                {% if can_interact|default:fungi.id %}
+                <span class="like-btn" onclick="likeFungi({{ fungi.id }})">👍 Like</span>
+                <!-- Collapsible comments section using Materialize -->
+                {% if fungi.comment_set.all %}
+                <ul class="collapsible">
+                    {% for comment in fungi.comment_set.all %}
+                    <li>
+                        <div class="collapsible-header"><i class="material-icons">comment</i>Comment</div>
+                        <div class="collapsible-body">
+                            <span class="comment-user">{{ comment.user.username }}:</span>{{ comment.content }}
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col s12">
+        <p>No public fungi posts available at the moment.</p>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Add JavaScript logic for liking a fungi. This is just a simple representation. Ideally, it should be handled more robustly, maybe with Django AJAX calls. -->
+<script>
+    function likeFungi(fungiId) {
+        // Logic to handle liking a fungi post.
+        alert(`Liked fungi with ID: ${fungiId}`);
+    }
+
+    // Initialize Materialize collapsible 
+    document.addEventListener('DOMContentLoaded', function() {
+        var elems = document.querySelectorAll('.collapsible');
+        var instances = M.Collapsible.init(elems);
+    });
+</script>
+
+{% endblock %}

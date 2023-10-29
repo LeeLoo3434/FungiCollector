@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import ListView, DetailView
 from .models import Fungi, Comment
+from userprofile.models import UserProfile, Like  # <-- Adjusted import
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
@@ -10,6 +11,9 @@ from django.urls import reverse_lazy
 from django.contrib import messages
 from django.urls import reverse
 from django.http import HttpResponseRedirect
+from .forms import UserProfileForm
+from django.contrib.auth.models import User
+
 def home(request):
     return render(request,'home.html')
 
@@ -31,7 +35,7 @@ class FungiCreate(LoginRequiredMixin, CreateView):
 class FungiUpdate(LoginRequiredMixin, UpdateView):
     model = Fungi
     fields = ['name', 'description', 'preferred_environment',
-            'edibility', 'date_collected', 'identified', 'photo''is_public']
+            'edibility', 'date_collected', 'identified', 'photo','is_public']
 
     def get_success_url(self):
         return reverse_lazy('fungi_detail', kwargs={'pk': self.object.pk})
@@ -101,6 +105,52 @@ class CommentDelete(LoginRequiredMixin, DeleteView):
         context = super().get_context_data(**kwargs)
         context['fungi'] = self.object.fungi  # Add the related fungi instance to the context
         return context
+    
+def profile_page(request, user_id):
+    user = User.objects.get(pk=user_id)
+    user_profile, created = UserProfile.objects.get_or_create(user=user)
+
+    if request.method == 'POST':
+        form = UserProfileForm(request.POST, request.FILES, instance=user_profile)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Profile updated successfully!")
+            return redirect('profile_page', user_id=user.id)
+    else:
+        form = UserProfileForm(instance=user_profile)
+
+    context = {
+        'user_profile': user_profile,
+        'profile_form': form
+    }
+    return render(request, 'profile_page.html', context)
+class UserFeed(ListView):
+    model = Fungi
+    template_name = 'public_feed.html'
+
+    def get_queryset(self):
+        return Fungi.objects.filter(is_public=True)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+        try:
+            user_profile = UserProfile.objects.get(user=self.request.user)
+        except UserProfile.DoesNotExist:
+            user_profile = None
+
+        # Add a dictionary to the context indicating which posts the user can interact with
+        # This is based on whether the user and the post's user are friends
+        can_interact = {}
+        for fungi in context['fungi_list']:
+            try:
+                fungi_owner_profile = UserProfile.objects.get(user=fungi.user)
+                can_interact[fungi.id] = user_profile.are_friends(fungi_owner_profile) if user_profile else False
+            except UserProfile.DoesNotExist:
+                can_interact[fungi.id] = False
+        
+        context['can_interact'] = can_interact
+        return context
 
 def signup(request):
     if request.method == 'POST':
@@ -108,11 +158,11 @@ def signup(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            return redirect('/')
+            return redirect('profile_page', user_id=user.id)  # Redirecting to the profile_page
         else:
             messages.error(request, 'Invalid sign up - try again')
     else:
         form = UserCreationForm()
-
     return render(request, 'registration/signup.html', {'form': form})
+
 

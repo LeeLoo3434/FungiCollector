@@ -13,6 +13,8 @@ urlpatterns = [
     path('fungi/<int:pk>/delete/', views.FungiDelete.as_view(), name='fungi_delete'),
     path('about/', views.about, name='about'),
     path('accounts/signup/', views.signup, name='signup'),
+    path('profile/<int:user_id>/', views.profile_page, name='profile_page'),  # New URL for profile_page
+    path('userfeed/', views.UserFeed.as_view(), name='user_feed'),  # New URL for UserFeed
 
     # Comment related URLs
     path('fungi/<int:fungi_id>/comment/create/', views.CommentCreate.as_view(), name='comment_create'),  # Updated this line
