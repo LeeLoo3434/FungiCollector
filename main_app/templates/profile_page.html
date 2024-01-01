@@ -49,12 +49,14 @@
                 {% endif %}
                 
                 <p><strong>Location:</strong> {{ user_profile.location }}</p>
+                <p><strong>Bio:</strong> {{ user_profile.bio }}</p>
+
                 <!-- Add more fields from UserProfile here as needed -->
             </div>
             <!-- Editing Section -->
             {% if request.user == user_profile.user %}
                 <div class="card-action">
-                    <form method="post">
+                    <form method="post" enctype="multipart/form-data">
                         {% csrf_token %}
                         <!-- Render profile form fields here -->
                         {{ profile_form.as_p }}
