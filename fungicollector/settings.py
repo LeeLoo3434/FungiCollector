@@ -77,16 +77,19 @@ TEMPLATES = [
 WSGI_APPLICATION = 'fungicollector.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/4.1/ref/settings/#databases
+#Database
+#https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'fungicollector',
+        'USER': 'aspenlola',  # Use the username you created
+        'PASSWORD': 'Newhome1!',  # Use the password you set
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators

@@ -29,6 +29,7 @@
         margin-top: 30px;
         margin-bottom: 30px;
     }
+
     .profile-image {
         width: 150px;
         height: 150px;
@@ -36,7 +37,13 @@
         margin-bottom: 20px;
     }
 
+    /* Additional style for collapsible form */
+    #editProfileForm {
+        display: none; /* Hidden by default */
+    }
+
 </style>
+
 <h1>{{ user_profile.user.username }}'s Profile</h1>
 
 <div class="row">
@@ -50,22 +57,39 @@
                 
                 <p><strong>Location:</strong> {{ user_profile.location }}</p>
                 <p><strong>Bio:</strong> {{ user_profile.bio }}</p>
-
                 <!-- Add more fields from UserProfile here as needed -->
             </div>
-            <!-- Editing Section -->
+            <!-- Toggle Button -->
             {% if request.user == user_profile.user %}
                 <div class="card-action">
-                    <form method="post" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        <!-- Render profile form fields here -->
-                        {{ profile_form.as_p }}
-                        <input type="submit" value="Update Profile" class="gradient-btn">
-                    </form>
+                    <button id="editProfileButton" class="gradient-btn">Edit Profile</button>
+                </div>
+
+                <!-- Collapsible Editing Section -->
+                <div id="editProfileForm">
+                    <div class="card-action">
+                        <form method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <!-- Render profile form fields here -->
+                            {{ profile_form.as_p }}
+                            <input type="submit" value="Update Profile" class="gradient-btn">
+                        </form>
+                    </div>
                 </div>
             {% endif %}
         </div>
     </div>
 </div>
+
+<script>
+    document.getElementById('editProfileButton').addEventListener('click', function() {
+        var form = document.getElementById('editProfileForm');
+        if (form.style.display === 'none' || form.style.display === '') {
+            form.style.display = 'block';
+        } else {
+            form.style.display = 'none';
+        }
+    });
+</script>
 
 {% endblock %}
