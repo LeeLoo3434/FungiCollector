@@ -6,125 +6,151 @@
     .content-wrapper {
         display: flex;
         flex-direction: column;
-        align-items: center; /* horizontally center */
-        justify-content: center; /* vertically center */
-        height: 80vh; /* take the full viewport height */
+        align-items: center;
+        justify-content: center;
+        min-height: 80vh;
+        padding: 20px;
     }
 
-    .gradient-btn, .gradient-link {
-        background: linear-gradient(to right, rgba(0, 0, 0, 0.9), rgba(128, 128, 128, 0.1));
+    .gradient-btn {
+        background: #6200EA; /* Modern purple gradient */
         color: white;
-        padding: 10px 15px;
-        border-radius: 2px;
-        text-align: center;
-        text-decoration: none;
-        display: inline-block;
-        transition: 0.3s;
+        padding: 12px 25px;
+        border: none;
+        border-radius: 50px;
+        font-size: 16px;
+        text-transform: uppercase;
+        transition: background 0.3s ease;
+        cursor: pointer;
+        box-shadow: 0 4px 14px rgba(0,0,0,0.1);
     }
 
-    .gradient-btn:hover, .gradient-link:hover {
-        background: linear-gradient(to right, rgba(0, 0, 0, 1), rgba(64, 64, 64, 0.2));
+    .gradient-btn:hover {
+        background: #7F39FB; /* Lighter purple on hover */
+        box-shadow: 0 6px 16px rgba(0,0,0,0.2);
     }
 
-    /* Adjustments for the table styling */
-    table {
-        width: 80%;
-        margin: 0 auto;
-    }
-
-    td {
-        padding: 10px;
+    h4.center-align {
+        font-size: 2rem; /* 32px */
+        margin-bottom: 30px;
+        color: #333;
     }
 
     .alert {
-        background-color: #f8d7da;
-        border-color: #f5c6cb;
-        color: #721c24;
-        padding: 10px;
+        background-color: #f44336; /* Red for errors */
+        color: white;
+        padding: 15px;
         margin-bottom: 20px;
         border-radius: 4px;
-        text-align: center; /* Centering the error messages */
+        text-align: center;
     }
 
     .card-panel {
         width: 100%;
-        max-width: 800px; /* Adjust as per your needs */
+        max-width: 600px; /* Not too wide for better readability */
+        padding: 20px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+        border-radius: 8px;
+    }
+
+    /* Form table to grid layout */
+    .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 2fr; /* Adjust if needed */
+        grid-gap: 20px;
+        align-items: center;
+    }
+
+    .form-grid label {
+        font-weight: bold;
+        color: #333;
+    }
+
+    .form-grid input[type='text'],
+    .form-grid input[type='date'],
+    .form-grid select,
+    .form-grid textarea {
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        width: 100%;
+    }
+
+    .form-grid .radio-group {
+        display: flex;
+        align-items: center;
+    }
+
+    .radio-group label {
+        margin-right: 20px;
+    }
+
+    .radio-group input[type='radio'] {
+        margin-right: 5px;
+    }
+
+    /* Style help text */
+    .form-grid small {
+        display: block;
+        margin-top: 5px;
+        color: #666;
     }
 </style>
-
 <div class="content-wrapper">
 
     <h4 class="center-align">
         {% if object %}
-            Edit Mushroom: <span class="teal-text">{{object.name}}</span>
+            Edit Mushroom: <span class="teal-text">{{ object.name }}</span>
         {% else %}
-            Upload a New Mushroom
+            New Find
         {% endif %}
     </h4>
 
     {% if form.errors %}
-    <div class="alert">
-        Please correct the following errors:
-        <ul>
-            {% for field, errors in form.errors.items %}
-                {% for error in errors %}
-                    <li>{{ field }}: {{ error }}</li>
+        <div class="alert">
+            Please correct the following errors:
+            <ul>
+                {% for field, errors in form.errors.items %}
+                    {% for error in errors %}
+                        <li>{{ field }}: {{ error }}</li>
+                    {% endfor %}
                 {% endfor %}
-            {% endfor %}
-        </ul>
-    </div>
+            </ul>
+        </div>
     {% endif %}
 
     <div class="card-panel">
         <form action="" method="post" enctype="multipart/form-data">
             {% csrf_token %}
-            <table>
+            <div class="form-grid">
                 {% for field in form %}
-    {% if not field.is_hidden %}
-        <tr>
-            <td>{{ field.label_tag }}</td>
-            <td>
-                {% if field.name == "edibility" or field.name == "identified" or field.name == "is_public" %}
-                    <label>
-                        <input type="radio" name="{{ field.name }}" value="True" class="with-gap" {% if field.value %}checked{% endif %}>
-                        <span>Yes</span>
-                    </label>
-                    <label>
-                        <input type="radio" name="{{ field.name }}" value="False" class="with-gap" {% if not field.value %}checked{% endif %}>
-                        <span>No</span>
-                    </label>
-                {% else %}
-                    {{ field }}
-                {% endif %}
-                {% if field.help_text %}
-                    <small style="display: block;">{{ field.help_text }}</small>
-                {% endif %}
-            </td>
-        </tr>
-    {% else %}
-        {{ field }}
-    {% endif %}
-{% endfor %}
-
-            </table>
-            <div class="row">
-                <div class="col s12 center-align">
-                    <button type="submit" class="gradient-btn">Submit!</button>
-                </div>
+                    <div>{{ field.label_tag }}</div>
+                    <div>
+                        {% if field.name == "edibility" or field.name == "identified" or field.name == "is_public" %}
+                            <div class="radio-group">
+                                <label>
+                                    <input type="radio" name="{{ field.name }}" value="True" class="with-gap" {% if field.value == "True" %}checked{% endif %}>
+                                    <span>Yes</span>
+                                </label>
+                                <label>
+                                    <input type="radio" name="{{ field.name }}" value="False" class="with-gap" {% if field.value == "False" %}checked{% endif %}>
+                                    <span>No</span>
+                                </label>
+                            </div>
+                        {% else %}
+                            {{ field }} <!-- Removed add_class filter -->
+                        {% endif %}
+                        {% if field.help_text %}
+                            <small>{{ field.help_text }}</small>
+                        {% endif %}
+                    </div>
+                {% endfor %}
             </div>
-            
+            <div class="center-align" style="margin-top: 30px;">
+                <button type="submit" class="gradient-btn">Submit!</button>
+            </div>
         </form>
     </div>
 </div>
-
-<script>
-    const dateEl = document.getElementById('id_date_collected');
-    M.Datepicker.init(dateEl, {
-        format: 'yyyy-mm-dd',
-        defaultDate: new Date(),
-        setDefaultDate: true,
-        autoClose: true
-    });
-</script>
 
 {% endblock %}

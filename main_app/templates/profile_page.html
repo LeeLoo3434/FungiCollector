@@ -3,53 +3,114 @@
 {% block content %}
 
 <style>
+    /* Base styles for modern look */
+    body, h1, p {
+        font-family: 'Poppins', sans-serif;
+    }
+
+    /* Improved button and link styling for a more modern, flat design */
     .gradient-btn, .gradient-link {
-        background: linear-gradient(to right, rgba(0, 0, 0, 0.9), rgba(128, 128, 128, 0.1));
+        background: #6200EA; /* A modern, vibrant color */
         color: white;
-        padding: 10px 15px;
-        border-radius: 4px;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 50px; /* More rounded edges for a softer look */
         text-align: center;
         text-decoration: none;
         display: inline-block;
-        transition: 0.3s;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        font-size: 16px;
+        box-shadow: 0 4px 14px rgba(0,0,0,0.1); /* Subtle shadow for depth */
     }
 
-    .gradient-link:hover {
-        background: linear-gradient(to right, rgba(0, 0, 0, 1), rgba(64, 64, 64, 0.2));
+    .gradient-link:hover, .gradient-btn:hover {
+        background: #7F39FB; /* A slightly lighter purple for hover state */
+        box-shadow: 0 6px 16px rgba(0,0,0,0.2); /* More pronounced shadow on hover */
+    }
+
+    /* Card styling for a cleaner look */
+    .card {
+        box-shadow: 0 8px 24px rgba(0,0,0,0.1); /* Softer shadow */
+        border-radius: 8px; /* Rounded corners for cards */
+    }
+
+    .card-content {
+        padding: 20px;
     }
 
     .card-action {
         text-align: center;
-    }
-
-    h1 {
-        font-family: 'Poppins', sans-serif;
-        font-weight: 500;
-        font-size: 2.5em;
-        margin-top: 30px;
-        margin-bottom: 30px;
+        border-top: none; /* Remove border for a cleaner transition to actions */
+        padding: 20px;
     }
 
     .profile-image {
         width: 150px;
         height: 150px;
         border-radius: 50%;
-        margin-bottom: 20px;
+        margin: 20px auto 30px;
+        display: block; /* Center the image */
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1); /* Shadow for depth */
     }
 
-    /* Additional style for collapsible form */
+    /* Form styling */
     #editProfileForm {
         display: none; /* Hidden by default */
+        padding: 20px;
+        background: #f7f7f7; /* Slightly off-white background for the form area */
+        border-radius: 8px; /* Consistent rounded corners */
     }
 
+    input[type="submit"] {
+        margin-top: 10px; /* Space above the submit button */
+    }
+
+    /* Adjust margins for top-level elements */
+    h1 {
+        font-weight: 600;
+        font-size: 2.2em;
+        margin-top: 40px;
+        margin-bottom: 20px;
+        text-align: center; /* Center-align the headers */
+    }
+
+    /* Modernizing the collection cards */
+    .fungi-card-image {
+        position: relative;
+        overflow: hidden; /* Ensures the image stays within the border-radius */
+        border-top-left-radius: 8px; /* Match the card's border-radius */
+        border-top-right-radius: 8px;
+    }
+
+    .fungi-img {
+        transition: transform 0.3s ease; /* Smooth transition for zoom effect */
+    }
+
+    .fungi-img:hover {
+        transform: scale(1.05); /* Slight zoom on hover */
+    }
+
+    .card-title {
+        position: absolute;
+        bottom: 10px; /* Position the title at the bottom of the image */
+        left: 10px;
+        color: white;
+        padding: 5px 10px;
+        background: rgba(0, 0, 0, 0.5); /* Semi-transparent background for legibility */
+        border-radius: 4px;
+    }
+
+    /* Responsive tweaks can go here */
 </style>
 
 <h1>{{ user_profile.user.username }}'s Profile</h1>
 
 <div class="row">
-    <div class="col s12 m6 l6">
+    <!-- Profile card -->
+    <div class="col s12 m6 offset-m3 l4 offset-l4">
         <div class="card">
-            <div class="card-content">
+            <div class="card-content center-align">
                 <!-- Display profile photo if exists -->
                 {% if user_profile.photo %}
                     <img src="{{ user_profile.photo.url }}" alt="{{ user_profile.user.username }}'s profile photo" class="profile-image">
@@ -57,30 +118,54 @@
                 
                 <p><strong>Location:</strong> {{ user_profile.location }}</p>
                 <p><strong>Bio:</strong> {{ user_profile.bio }}</p>
-                <!-- Add more fields from UserProfile here as needed -->
+                <!-- Add more fields from
+UserProfile here as needed -->
+</div>
+<!-- Toggle Button -->
+{% if request.user == user_profile.user %}
+<div class="card-action">
+<button id="editProfileButton" class="gradient-btn">Edit Profile</button>
+</div>
+            <!-- Collapsible Editing Section -->
+            <div id="editProfileForm">
+                <div class="card-action center-align">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <!-- Render profile form fields here -->
+                        {{ profile_form.as_p }}
+                        <input type="submit" value="Update Profile" class="gradient-btn">
+                    </form>
+                </div>
             </div>
-            <!-- Toggle Button -->
-            {% if request.user == user_profile.user %}
-                <div class="card-action">
-                    <button id="editProfileButton" class="gradient-btn">Edit Profile</button>
-                </div>
-
-                <!-- Collapsible Editing Section -->
-                <div id="editProfileForm">
-                    <div class="card-action">
-                        <form method="post" enctype="multipart/form-data">
-                            {% csrf_token %}
-                            <!-- Render profile form fields here -->
-                            {{ profile_form.as_p }}
-                            <input type="submit" value="Update Profile" class="gradient-btn">
-                        </form>
-                    </div>
-                </div>
-            {% endif %}
-        </div>
+        {% endif %}
     </div>
 </div>
-
+</div>
+<!-- Fungi Collection Section -->
+<h1>{{ user_profile.user.username }}'s Fungi Collection</h1>
+<div class="row">
+    {% for fungi in fungi_list %}
+        <div class="col s12 m4">
+            <div class="card">
+                <div class="card-image fungi-card-image">
+                    {% if fungi.photo %}
+                        <img class="responsive-img fungi-img" src="{{ fungi.photo.url }}" alt="{{ fungi.name }}">
+                    {% endif %}
+                    <span class="card-title">{{ fungi.name }}</span>
+                </div>
+                <div class="card-content">
+                    <p>{{ fungi.description }}</p>
+                    <!-- Add other fungi details you want to display -->
+                </div>
+                <div class="card-action">
+                    <a href="{% url 'fungi_detail' fungi.id %}" class="gradient-link">View details</a>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <p class="center-align">No fungi found in your collection.</p>
+    {% endfor %}
+</div>
 <script>
     document.getElementById('editProfileButton').addEventListener('click', function() {
         var form = document.getElementById('editProfileForm');
@@ -91,5 +176,5 @@
         }
     });
 </script>
-
 {% endblock %}
+

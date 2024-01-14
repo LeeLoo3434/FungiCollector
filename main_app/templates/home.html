@@ -9,11 +9,11 @@
   
   <div class="row center">
     <!-- Materialize Carousel -->
-    <div class="carousel" style="height: 350px;"> <!-- Adjust height as needed -->
-      <a class="carousel-item" href="#four!"><img class="carousel-img" src="{% static 'images/mushfour.jpeg' %}" alt="Mushroom 4"></a>
-      <a class="carousel-item" href="#one!"><img class="carousel-img" src="{% static 'images/mushroom.jpeg' %}" alt="Mushroom 1"></a>
-      <a class="carousel-item" href="#two!"><img class="carousel-img" src="{% static 'images/mushtwo.jpeg' %}" alt="Mushroom 2"></a>
-      <a class="carousel-item" href="#three!"><img class="carousel-img" src="{% static 'images/mushthree.jpeg' %}" alt="Mushroom 3"></a>
+    <div class="carousel">
+      <a class="carousel-item" href="#four!"><img class="carousel-img" src="{% static 'images/mushfour.png' %}" alt="Mushroom 4"></a>
+      <a class="carousel-item" href="#one!"><img class="carousel-img" src="{% static 'images/mushroom.png' %}" alt="Mushroom 1"></a>
+      <a class="carousel-item" href="#two!"><img class="carousel-img" src="{% static 'images/mushtwo.webp' %}" alt="Mushroom 2"></a>
+      <a class="carousel-item" href="#three!"><img class="carousel-img" src="{% static 'images/mushthree.png' %}" alt="Mushroom 3"></a>
     </div>
   </div>
 
@@ -22,32 +22,69 @@
   </div>
   
   <div class="row center">
-    <a href="{% url 'signup' %}" class="btn">Start Collecting</a>
+    <a href="{% url 'signup' %}" class="btn" style="background-color: rgb(233, 243, 252); color: #000;">Start Collecting</a>
   </div>
+  
 </div>
 
 <style>
-    .carousel .carousel-item img.carousel-img {
-        width: auto; /* Width can adjust to the image's natural width */
-        height: 300px; /* Set this to your desired height */
-        object-fit: cover; /* This will ensure images cover the area without distortion */
-        margin-left: auto; 
-        margin-right: auto;
-    }
-    h1.header {
-        font-family: 'Poppins', sans-serif;
-        font-weight: 500; /* Medium weight */
-        font-size: 2.5em; /* Adjust as needed */
-        margin-top: 30px;
-        margin-bottom: 30px;
-    }
+  /* Carousel Item Styling */
+  .carousel .carousel-item {
+    padding: 10px; /* Adds spacing around each item */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15); /* Subtle shadow for depth */
+  }
+
+  /* Increase Carousel Image Size */
+  .carousel .carousel-item img.carousel-img {
+    width: auto; /* Width can adjust to the image's natural width */
+    height: 350px; /* Increased height for larger images */
+    object-fit: cover; /* This will ensure images cover the area without distortion */
+    display: block;
+    margin-left: auto; 
+    margin-right: auto;
+  }
+
+  /* Body and Background Styling */
+  body {
+    background-color: #e0e0e0; /* Slightly darker background for better contrast */
+    color: #333; /* Standard text color */
+  }
+
+  /* Adjust button color to match the icon */
+ /* Adjust button color to match the icon and text color to black */
+  .btn {
+      background-color: rgb(233, 243, 252); /* Light blue color to match the icon */
+      color: #000; /* Black text for contrast */
+      transition: background-color 0.3s; /* Smooth transition for hover effect */
+  }
+
+  /* Adjust button hover effect */
+  .btn:hover {
+    background-color: rgb(213, 228, 241); /* Darker shade for hover state */
+    color: #000; /* Ensure text remains black on hover */
+  }
+
+  /* Header Styling */
+  h1.header {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500; /* Medium weight */
+    font-size: 2.5em; /* Adjust as needed */
+    margin-top: 30px;
+    margin-bottom: 30px;
+  }
+
+  /* Body Text Styling */
+  h5.header {
+    color: #555; /* Subdued color for text */
+    line-height: 1.6; /* Improve readability */
+  }
 </style>
 
 <script>
     // Initialize the carousel
     document.addEventListener('DOMContentLoaded', function() {
         var elems = document.querySelectorAll('.carousel');
-        var instances = M.Carousel.init(elems, {
+        M.Carousel.init(elems, {
             fullWidth: false,
             indicators: true
         });

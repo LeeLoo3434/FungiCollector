@@ -112,6 +112,9 @@ def profile_page(request, user_id):
     user = User.objects.get(pk=user_id)
     user_profile, created = UserProfile.objects.get_or_create(user=user)
 
+    # Fetch the list of fungi associated with this user
+    fungi_list = Fungi.objects.filter(user=user)  # Adjust the filter according to your model relationships
+
     if request.method == 'POST':
         form = UserProfileForm(request.POST, request.FILES, instance=user_profile)
         if form.is_valid():
@@ -123,9 +126,11 @@ def profile_page(request, user_id):
 
     context = {
         'user_profile': user_profile,
-        'profile_form': form
+        'profile_form': form,
+        'fungi_list': fungi_list  # Add the fungi list to the context
     }
     return render(request, 'profile_page.html', context)
+
 class UserFeed(ListView):
     model = Fungi
     template_name = 'public_feed.html'
