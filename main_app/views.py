@@ -1,4 +1,6 @@
 from django.shortcuts import render, redirect
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import ListView, DetailView
 from .models import Fungi, Comment
@@ -151,6 +153,7 @@ class UserFeed(ListView):
         
         context['can_interact'] = can_interact
         return context
+        
 
 def signup(request):
     if request.method == 'POST':
@@ -165,4 +168,25 @@ def signup(request):
         form = UserCreationForm()
     return render(request, 'registration/signup.html', {'form': form})
 
+
+# Other imports and views...
+
+@login_required
+@require_POST
+def like_fungi(request, fungi_id):
+    fungi_id = request.POST.get('id')
+    fungi = Fungi.objects.get(id=fungi_id)
+
+    # Toggle like status
+    if request.user in fungi.liked_by.all():
+        fungi.liked_by.remove(request.user)
+        liked = False
+    else:
+        fungi.liked_by.add(request.user)
+        liked = True
+
+    fungi.likes = fungi.liked_by.count()  # Update like count
+    fungi.save()
+
+    return JsonResponse({'liked': liked, 'total_likes': fungi.likes})
 

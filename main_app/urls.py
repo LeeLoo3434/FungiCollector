@@ -11,6 +11,7 @@ urlpatterns = [
     path('fungi/<int:pk>/', views.FungiDetail.as_view(), name='fungi_detail'),
     path('fungi/<int:pk>/update/', views.FungiUpdate.as_view(), name='fungi_update'),
     path('fungi/<int:pk>/delete/', views.FungiDelete.as_view(), name='fungi_delete'),
+    path('fungi/<int:fungi_id>/like/', views.like_fungi, name='like_fungi'),
     path('about/', views.about, name='about'),
     path('accounts/signup/', views.signup, name='signup'),
     path('profile/<int:user_id>/', views.profile_page, name='profile_page'),  # New URL for profile_page

@@ -14,6 +14,9 @@ class Fungi(models.Model):
     identified = models.BooleanField(default=False)  # True means identified, False means not
     is_public = models.BooleanField(default=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    likes = models.PositiveIntegerField(default=0)
+    liked_by = models.ManyToManyField(User, related_name='liked_fungi', blank=True)
+
 
     def get_absolute_url(self):
         return reverse('fungi_detail', kwargs={'pk': self.id})

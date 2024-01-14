@@ -45,9 +45,10 @@
             </div>
             <div class="card-action">
                 <a href="{% url 'fungi_detail' fungi.id %}">Details</a>
-                <!-- Conditional display for interaction based on friendship -->
-                {% if can_interact|default:fungi.id %}
-                <span class="like-btn" onclick="likeFungi({{ fungi.id }})">👍 Like</span>
+                <span class="like-btn" onclick="likeFungi({{ fungi.id }})">
+                    👍 Like <span id="like-count-{{ fungi.id }}">{{ fungi.likes }}</span>
+                </span>
+
                 <!-- Collapsible comments section using Materialize -->
                 {% if fungi.comment_set.all %}
                 <ul class="collapsible">
@@ -61,7 +62,7 @@
                     {% endfor %}
                 </ul>
                 {% endif %}
-                {% endif %}
+
             </div>
         </div>
     </div>
@@ -72,11 +73,41 @@
     {% endfor %}
 </div>
 
-<!-- Add JavaScript logic for liking a fungi. This is just a simple representation. Ideally, it should be handled more robustly, maybe with Django AJAX calls. -->
 <script>
     function likeFungi(fungiId) {
-        // Logic to handle liking a fungi post.
-        alert(`Liked fungi with ID: ${fungiId}`);
+        const csrftoken = getCookie('csrftoken'); // Function to get CSRF token
+
+        fetch(`/fungi/${fungiId}/like/`, {  // Modified URL pattern to include fungiId
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRFToken': csrftoken
+            },
+            body: 'id=' + fungiId
+        })
+        .then(response => response.json())
+        .then(data => {
+            const likeCountElement = document.getElementById('like-count-' + fungiId);
+            likeCountElement.innerText = data.total_likes;
+
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
+    // Function to get CSRF token from cookies
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
     }
 
     // Initialize Materialize collapsible 
